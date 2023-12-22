@@ -30,6 +30,7 @@
         <li><a href="tanim.gelir.kategorileri.php" >Gelir Kategorileri</a></li>
         <li><a href="tanim.odeme.kategorileri.php" >Ödeme Kategorileri</a></li>
         <li><a href="tanim.hesaplar.php" >Hesap Tanımları</a>
+        <li><a href="rapor.gelirler.php" >Gelir Raporu</a>
             </ul>
 <br/>
        </div>
@@ -38,6 +39,7 @@
             <tr>
                 <th> ID </th>
                 <th> Adı </th>
+                <th> Miktar </th>
                 <th> Telefon </th>
                 <th> E-posta </th>
                 <th class='text-end'> Actions </th>
@@ -45,7 +47,8 @@
 
     <?php
         include('./db/connection.php');
-        $SORGU = $DB->prepare("SELECT id, ad, telefon,eposta FROM ref_hesaplar");
+        $SORGU = $DB->prepare("SELECT h.id, h.ad, sum(g.miktar) miktar,h.telefon,h.eposta
+            FROM ref_hesaplar h,gelirler g where h.id=g.hesap_id GROUP BY h.id");
         $SORGU->execute();
         $users = $SORGU->fetchAll(PDO::FETCH_ASSOC);
         //echo '<pre>'; print_r($users);
@@ -54,6 +57,7 @@
             <tr>
                 <td> <?= $user['id'] ?> </td>
                 <td> <?= $user['ad'] ?> </td>
+                <td style="text-align:right"> <?= $user['miktar'] ?> </td>
                 <td> <?= $user['telefon'] ?> </td>
                 <td> <?= $user['eposta'] ?> </td>
                 <td class='text-end'>

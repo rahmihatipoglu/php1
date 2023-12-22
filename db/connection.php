@@ -16,8 +16,38 @@ try {
   echo "Connection failed: " . $e->getMessage();
 }
 
-function DD($var){
+function DD($var, $title=""){
+  if($title<>"") echo "<h1>{$title}</h1>";
   echo "<pre>";
   print_r($var);
   echo "</pre>";
+}
+
+function DDD($var, $title=""){
+  DD($var, $title="");
+  die();
+}
+
+
+#################################################
+################################################# getOptions
+#################################################
+function getOptions($SQL, $MevcutID = "-99999", $ilkID = "", $ilkLABEL = "", $ID = "id", $LABEL = "ad")
+{
+  global $DB;
+  
+  $SORGU = $DB->prepare($SQL);
+  $SORGU->execute();
+  $rows = $SORGU->fetchAll(PDO::FETCH_ASSOC);
+
+  $myOptions = "";
+  
+  if ($ilkLABEL <> "") $myOptions = "<option value='{$ilkID}'>{$ilkLABEL}</option>";
+  
+  foreach ($rows as $row) {
+    $secili = "";
+    if ($MevcutID == $row[$ID]) $secili = "selected";
+    $myOptions .= "<option value='{$row[$ID]}' {$secili}>{$row[$LABEL]}</option>\n";
+  }
+  return $myOptions;
 }
